@@ -79,9 +79,12 @@ public class Lights extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         x += 5;
         x %= 255;
         colors(x);
         light.setData(ledBuffer);
+
+
     }
 }
