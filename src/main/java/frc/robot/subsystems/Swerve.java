@@ -93,6 +93,12 @@ public class Swerve extends SubsystemBase {
     public double getPitch(){
         return gyro.getPitch();
     }
+
+    public boolean isLevel(){
+        return Math.abs(getPitch()) < Constants.BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES;
+
+
+    }
     public void testpitch(){
         SmartDashboard.putNumber("pitch", getPitch());
     }
