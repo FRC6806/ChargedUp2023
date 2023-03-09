@@ -21,75 +21,51 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick drivera = new Joystick(1);
+    private final Joystick driverJoystick = new Joystick(0);
+    private final Joystick operatorController = new Joystick(1);
 
-    /* Drive Controls */
-    // private final int translationAxis = XboxController.Axis.kLeftY.value;
-    // private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    // private final int rotationAxis = XboxController.Axis.kRightX.value;
+    /* Axis */
     private final int translationAxis = 1;
     private final int strafeAxis = 0;
     private final int rotationAxis = 2;
     private final int slideraxis = 3;
 
-
-    /* Driver Buttons */
-    private final JoystickButton driveraLeftBumper = new JoystickButton(drivera, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton driveraRightBumper = new JoystickButton(drivera, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton driveraLStick = new JoystickButton(drivera, XboxController.Button.kLeftStick.value);
-    private final JoystickButton driveraRStick= new JoystickButton(drivera, XboxController.Button.kRightStick.value);
-    private final JoystickButton driveraX = new JoystickButton(drivera, XboxController.Button.kX.value);
-    private final JoystickButton driveraY = new JoystickButton(drivera, XboxController.Button.kY.value);
-    private final JoystickButton driveraA = new JoystickButton(drivera, XboxController.Button.kA.value);
-    private final JoystickButton driveraB = new JoystickButton(drivera, XboxController.Button.kB.value);
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton driverX = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton driverB = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton driverA = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton driverY = new JoystickButton(driver, XboxController.Button.kY.value); 
-    private final JoystickButton num8 = new JoystickButton(driver, 8);
-    private final JoystickButton num7 = new JoystickButton(driver, 7);
-    private final JoystickButton num9 = new JoystickButton(driver, 9);
-    private final JoystickButton driverLeftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value); 
-    private final JoystickButton driverRightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton driverstart = new JoystickButton(drivera, XboxController.Button.kStart.value);
-    private final JoystickButton driverback = new JoystickButton(drivera, XboxController.Button.kBack.value);
-    private final JoystickButton levelButton = new JoystickButton(driver, 1);
+    /* Substystems */
     private final Lights lights = new Lights(9);
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake(Constants.intakeMotorCAN, Constants.armPort_2,Constants.armPort_3);
     private final Arm s_Arm = new Arm(Constants.armPort_0, Constants.armPort_1);
     private final Vision s_Vision = new Vision("OV5647");
+    private final Elevator s_Elevator = new Elevator(24,25);
+    
+    /* Commands */
     private final BalanceOnBeamCommand3 s_BalanceOnBeamCommand = new BalanceOnBeamCommand3(s_Swerve);
     private final DriveTilt s_DriveTilt = new DriveTilt(s_Swerve);
     private final Backtilt s_Backtilt = new Backtilt(s_Swerve);
     private final OffBalance s_OffBalance = new OffBalance(s_Swerve);
     private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
-    private final Elevator s_Elevator = new Elevator(24,25);
     //private final Hunt s_Hunt = new Hunt(s_Swerve,s_Vision);
     
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         
+         // Configure the button bindings
+        configureButtonBindings();
+
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean(),
-                () -> driver.getRawAxis(slideraxis)
-                
+                () -> -driverJoystick.getRawAxis(translationAxis), 
+                () -> -driverJoystick.getRawAxis(strafeAxis), 
+                () -> driverJoystick.getRawAxis(rotationAxis), 
+                () -> driverButton5.getAsBoolean(),
+                () -> driverJoystick.getRawAxis(slideraxis)     
             )
         );
 
         s_Vision.setDefaultCommand( new InstantCommand(() -> s_Vision.start(), s_Vision));
 
-        // Configure the button bindings
-        configureButtonBindings();
     }
 
     /**
@@ -99,37 +75,64 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        driverX.onTrue(new Hunt(s_Swerve,s_Vision));
-        //driverB.onTrue(new InstantCommand(() -> s_Intake.stop()));
-        //driverA.onTrue(new InstantCommand(() -> s_Intake.spin(-0.5)));
-        driveraX.onTrue(new InstantCommand(() -> s_Intake.spin((0.5))));
-        driveraX.onFalse(new InstantCommand(() -> s_Intake.stop()));
-        driveraB.onTrue(new InstantCommand(() -> s_Intake.spin((-0.5))));
-        driveraB.onFalse(new InstantCommand(() -> s_Intake.stop()));
-        //driveraRightBumper.onFalse(new InstantCommand(() -> s_Intake.stop()));
-        //driveraA.onTrue(new InstantCommand(() -> s_Arm.down()));
-        //driveraY.onTrue(new InstantCommand(() -> s_Arm.up()));
-        driveraA.onTrue(new InstantCommand(() -> s_Elevator.manualdown()));
-        driveraA.onFalse(new InstantCommand(() -> s_Elevator.stop()));
-        driveraY.onTrue(new InstantCommand(()-> s_Elevator.manualup()));
-        driveraY.onFalse(new InstantCommand(() -> s_Elevator.stop()));
+        private final JoystickButton driverThumbButton = new JoystickButton(driverJoystick, 1);
+        private final JoystickButton driverTrigger = new JoystickButton(driverJoystick, 2);
+        private final JoystickButton driverButton3 = new JoystickButton(driverJoystick, 3);
+        private final JoystickButton driverButton4 = new JoystickButton(driverJoystick, 4);
+        private final JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
+        private final JoystickButton driverButton6 = new JoystickButton(driverJoystick, 6);
+        private final JoystickButton driverButton7 = new JoystickButton(driverJoystick, 7);
+        private final JoystickButton driverButton8 = new JoystickButton(driverJoystick, 8);
+        private final JoystickButton driverButton9 = new JoystickButton(driverJoystick, 9);
 
-        driveraLStick.onTrue(new InstantCommand(() -> s_Arm.down()));
-        driveraRStick.onTrue(new InstantCommand(() -> s_Arm.up()));
+    
+        /* Operator Buttons */
+        private final JoystickButton operatorControllerLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+        private final JoystickButton operatorControllerRightBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+        private final JoystickButton operatorControllerLStick = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
+        private final JoystickButton operatorControllerRStick= new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
+        private final JoystickButton operatorControllerX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+        private final JoystickButton operatorControllerY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        private final JoystickButton operatorControllerA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+        private final JoystickButton operatorControllerB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+        private final JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+        private final JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+    
 
-        levelButton.onTrue(new InchWorm(s_Swerve));
-        //driverstart.onTrue(new InstantCommand(() -> s_Arm.compressoff()));
-        //driverback.onTrue(new InstantCommand(() -> s_Arm.off()));
-        driverback.onTrue(new InstantCommand(() -> s_Intake.up()));
-        driverstart.onTrue(new InstantCommand(() -> s_Intake.down()));
+        /* Button Bindings */
+
+        driverButton4.onTrue(new InstantCommand(() -> s_Swerve.driverButton4()));
+        driverButton3.onTrue(new Hunt(s_Swerve,s_Vision));
+        //driverTrigger.onTrue(new InstantCommand(() -> s_Intake.stop()));
+        //operatorController.onTrue(new InstantCommand(() -> s_Intake.spin(-0.5)));
+        operatorControllerX.onTrue(new InstantCommand(() -> s_Intake.spin((0.5))));
+        operatorControllerX.onFalse(new InstantCommand(() -> s_Intake.stop()));
+        operatorControllerB.onTrue(new InstantCommand(() -> s_Intake.spin((-0.5))));
+        operatorControllerB.onFalse(new InstantCommand(() -> s_Intake.stop()));
+        //operatorControllerRightBumper.onFalse(new InstantCommand(() -> s_Intake.stop()));
+        //operatorControllerA.onTrue(new InstantCommand(() -> s_Arm.down()));
+        //operatorControllerY.onTrue(new InstantCommand(() -> s_Arm.up()));
+        operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.manualdown()));
+        operatorControllerA.onFalse(new InstantCommand(() -> s_Elevator.stop()));
+        operatorControllerY.onTrue(new InstantCommand(()-> s_Elevator.manualup()));
+        operatorControllerY.onFalse(new InstantCommand(() -> s_Elevator.stop()));
+
+        operatorControllerLStick.onTrue(new InstantCommand(() -> s_Arm.down()));
+        operatorControllerRStick.onTrue(new InstantCommand(() -> s_Arm.up()));
+
+        driverThumbButton.onTrue(new InchWorm(s_Swerve));
+        //operatorStart.onTrue(new InstantCommand(() -> s_Arm.compressoff()));
+        //operatorBack.onTrue(new InstantCommand(() -> s_Arm.off()));
+        operatorBack.onTrue(new InstantCommand(() -> s_Intake.up()));
+        operatorStart.onTrue(new InstantCommand(() -> s_Intake.down()));
 
         new InstantCommand(() ->s_Vision.start());
-        driverB.onTrue( new InstantCommand(() ->s_Swerve.testpitch()));
-        num9.onTrue( new InstantCommand(()-> lights.mode()));
-        //num9.onTrue( new InstantCommand(()-> elev.periodic()));
-        num7.onTrue( new InstantCommand(() -> s_Swerve.resetModulesToAbsolute()));
+        driverTrigger.onTrue( new InstantCommand(() ->s_Swerve.testpitch()));
+        driverButton9.onTrue( new InstantCommand(()-> lights.mode()));
+        //driverButton9.onTrue( new InstantCommand(()-> elev.periodic()));
+        driverButton7.onTrue( new InstantCommand(() -> s_Swerve.resetModulesToAbsolute()));
         
 
         
