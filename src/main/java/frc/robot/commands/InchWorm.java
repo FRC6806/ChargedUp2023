@@ -12,17 +12,27 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 // This command self=balances on the charging station using gyroscope pitch as feedback
-public class InchWorm extends CommandBase{
+public class InchWormAuto extends SequentialCommandGroup{
 
   private Swerve s_Swerve;
-
-  private double error;
-  private double currentAngle;
   private double drivePower;
 
   /** Command to use Gyro data to resist the tip angle from the beam - to stabalize and balanace */
   public InchWorm(Swerve s_Swerve) {
-    this.s_Swerve = s_Swerve;
+    super( 
+      new DriveDistance(3 ,s_Swerve, double .3),
+      new WaitCommand( 1 ),
+      new Commands.sequence (
+            new DriveDistance(.1 ,s_Swerve, double .2),
+            new WaitCommand( 1 ),
+      ).repeatedly().until( Math.abs( s_Swerve.getPitch() ) <.5 )
+    
+    
+    )
+
+
+
+
     addRequirements(s_Swerve);
  
       
