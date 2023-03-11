@@ -13,6 +13,7 @@ public class Intake extends SubsystemBase {
     private CANSparkMax intakeMotor;
     private DoubleSolenoid intakeSlant;
     private PneumaticHub hub = new PneumaticHub(17);
+    private double speed; 
 
     public Intake(int intakeMotorCAN, int port_2,int port_3){
         intakeMotor = new CANSparkMax(intakeMotorCAN, MotorType.kBrushless);
@@ -20,7 +21,19 @@ public class Intake extends SubsystemBase {
         intakeSlant = new DoubleSolenoid(17, PneumaticsModuleType.REVPH,port_2, port_3);
     }
 
+    public void setSpeed(double speed){
+        this.speed = speed;
+    }
+
+    public double getSpeed(){
+        return speed; 
+    }
+
     public void spin(double speed){
+        intakeMotor.set(speed);
+    }
+
+    public void spin(){
         intakeMotor.set(speed);
     }
 

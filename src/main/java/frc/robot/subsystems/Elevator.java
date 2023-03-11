@@ -30,18 +30,50 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
+
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+
+import frc.robot.sim.PhysicsSim;
 
 
 public class Elevator extends SubsystemBase {
     SendableChooser<String> Mode = new SendableChooser<String>();
     private WPI_TalonFX first;
     private WPI_TalonFX second;
+    private int position;
     StringBuilder _sb;
 
 public Elevator(int canone,int cantwo){
+    double m_targetMin = 0;
+	double m_targetMax = 25000;
+	double m_targetHigh = 40000;
+    
     first = new WPI_TalonFX(canone);
     second = new WPI_TalonFX(cantwo);
     _sb = new StringBuilder();
+    /* Hardware */
+	WPI_TalonFX _talon = new WPI_TalonFX(24, "rio"); // Rename "rio" to match the CANivore device name if using a CANivore
+	// WPI_TalonFX _talon2 = new WPI_TalonFX(25, "rio");
+	Joystick _joy = new Joystick(1);
+
+	BaseMotorController _follower1 = new WPI_TalonFX(25, "rio");
+	/* Used to build string throughout loop */
+	StringBuilder _sb = new StringBuilder();
+
+	/** How much smoothing [0,8] to use during MotionMagic */
+	int _smoothing = 0;
+
+	/** save the last Point Of View / D-pad value */
+	int _pov = -1;
 
     		/* Setup Follower(s) */
 		second.configFactoryDefault();
@@ -91,26 +123,29 @@ public Elevator(int canone,int cantwo){
 		// _talon.config_kI(Constants.kSlotIdx, Constants.kGains.kI, Constants.kTimeoutMs);
 		// _talon.config_kD(Constants.kSlotIdx, Constants.kGains.kD, Constants.kTimeoutMs);
 
-		first.config_kF(Constants.kSlotIdx, .238, Constants.kTimeoutMs);
-		first.config_kP(Constants.kSlotIdx, .069, Constants.kTimeoutMs);
-		first.config_kI(Constants.kSlotIdx, 0, Constants.kTimeoutMs);
-		first.config_kD(Constants.kSlotIdx, 0, Constants.kTimeoutMs);
+		first.config_kF(Constants.kSlotIdx, 0.238, Constants.kTimeoutMs);
+		first.config_kP(Constants.kSlotIdx, 0.069, Constants.kTimeoutMs);
+		first.config_kI(Constants.kSlotIdx, 0.001, Constants.kTimeoutMs);
+		first.config_kD(Constants.kSlotIdx, 0.69, Constants.kTimeoutMs);
 
 		/* Set acceleration and vcruise velocity - see documentation */
 		first.configMotionCruiseVelocity(1022,Constants.kTimeoutMs);
-		first.configMotionAcceleration(558, Constants.kTimeoutMs);
+		first.configMotionAcceleration(300, Constants.kTimeoutMs);
 
 		/* Zero the sensor once on robot boot up */
 		first.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-
+    
 
 
 }
 
 
+
+    
 public int getdist(){
     String height = SmartDashboard.getString("Lift Mode", "");
-    if (height == "high Cone"){
+
+    if (height.equals("High Cone")){
         return 0;
     }
     else if (height == "med Cone"){
@@ -131,18 +166,21 @@ public int getdist(){
     }
     else{
         return 0;
-        }
+    }
  }
 
 
 public void moveToPosition(int position){
     double targetPos = position;
+    double horizontalHoldOutput = .13;
     first.set(TalonFXControlMode.MotionMagic, targetPos);
+
     /* Append more signals to print when in speed mode */
     _sb.append("\t err:");
     _sb.append(first.getClosedLoopError(Constants.kPIDLoopIdx));
     _sb.append("\t trg:");
     _sb.append(targetPos);
+    Instrum.Process(first, _sb);
 }
 
 
@@ -170,6 +208,14 @@ public void stop(){
 
         SmartDashboard.putNumber("Elevator Encoder 1", first.getSelectedSensorPosition());
         SmartDashboard.putNumber("Elevator Encoder 2", second.getSelectedSensorPosition());
-        Instrum.Process(first, _sb);
+        
+    }
+
+    public int getPosition(){
+        return position;
+    }
+
+    public void setPosition(int position){
+        this.position = position; 
     }
 }

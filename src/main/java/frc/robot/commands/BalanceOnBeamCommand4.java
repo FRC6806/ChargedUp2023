@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 // This command self=balances on the charging station using gyroscope pitch as feedback
-public class BalanceOnBeamCommand extends CommandBase {
+public class BalanceOnBeamCommand4 extends CommandBase {
 
   private Swerve s_Swerve;
 
@@ -19,7 +19,7 @@ public class BalanceOnBeamCommand extends CommandBase {
   private double drivePower;
 
   /** Command to use Gyro data to resist the tip angle from the beam - to stabalize and balanace */
-  public BalanceOnBeamCommand(Swerve s_Swerve) {
+  public BalanceOnBeamCommand4(Swerve s_Swerve) {
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
   }
@@ -33,40 +33,23 @@ public class BalanceOnBeamCommand extends CommandBase {
   // Called every time the schsceduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Uncomment the line below this to simulate the gyroscope axis with a controller joystick
-    // Double currentAngle = -1 * Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
     this.currentAngle = s_Swerve.getPitch();
 
-    error = (currentAngle - Constants.BEAM_BALANCED_GOAL_DEGREES);
-    error = Math.pow(error, .25);
-    
-    drivePower = Math.min(Math.abs( Constants.BEAM_BALANACED_DRIVE_KP * error) , 1);
-    drivePower = Math.copySign(drivePower, error);
+    SmartDashboard.putNumber("Angle", currentAngle);
 
+    drivePower = Math.pow(currentAngle, 0.25) * currentAngle;
 
-    //drivePower = Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
-
-
-
-    // Our robot needed an extra push to drive up in reverse, probably due to weight imbalances
-    if (drivePower < 0) {
-      drivePower *= Constants.BACKWARDS_BALANCING_EXTRA_POWER_MULTIPLIER;
+    if (currentAngle > 0.5){
+      s_Swerve.drive(new Translation2d(drivePower, 0).times(Constants.Swerve.maxSpeed),
+      0 * Constants.Swerve.maxAngularVelocity, 
+      true,//robotCentricSup.getAsBoolean(), 
+      true );
+    } else if (currentAngle < -0.5){
+      s_Swerve.drive(new Translation2d(drivePower, 0).times(Constants.Swerve.maxSpeed),
+      0 * Constants.Swerve.maxAngularVelocity, 
+      true,//robotCentricSup.getAsBoolean(), 
+      true );
     }
-
-    // Limit the max power
-    if (Math.abs(drivePower) > 0.2) {
-      drivePower = Math.copySign(0.1, drivePower);
-    }
-
-    s_Swerve.drive(new Translation2d(drivePower, 0).times(Constants.Swerve.maxSpeed),
-    0 * Constants.Swerve.maxAngularVelocity, 
-    true,//robotCentricSup.getAsBoolean(), 
-    true );
-    
-    // Debugging Print Statments
-    SmartDashboard.putNumber("Current Angle: " , currentAngle);
-    SmartDashboard.putNumber("Error " , error);
-    SmartDashboard.putNumber("Drive Power: " , drivePower);
   }
 
   // Called once the command ends or is interrupted.

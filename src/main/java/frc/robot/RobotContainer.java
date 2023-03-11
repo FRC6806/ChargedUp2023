@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -44,6 +45,10 @@ public class RobotContainer {
     private final Backtilt s_Backtilt = new Backtilt(s_Swerve);
     private final OffBalance s_OffBalance = new OffBalance(s_Swerve);
     private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
+
+
+    private double intakeSpeed = 0;
+    private int setPosition = 0;
     // private final Hunt s_Hunt = new Hunt(s_Swerve,s_Vision);
     
     
@@ -52,8 +57,8 @@ public class RobotContainer {
         
         // Configure the button bindings
         configureButtonBindings();
-
-        s_Elevator.setDefaultCommand(new TeleopElevator(s_Elevator, () ->operatorController.getRawAxis(1)));
+        
+        // s_Elevator.setDefaultCommand(new TeleopElevator(s_Elevator, () -> -0.25 * operatorController.getRawAxis(1)));
 
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -67,6 +72,8 @@ public class RobotContainer {
         );
 
         s_Vision.setDefaultCommand( new InstantCommand(() -> s_Vision.start(), s_Vision) );
+
+        s_Elevator.stop();
 
     }
 
@@ -101,22 +108,46 @@ public class RobotContainer {
         JoystickButton operatorControllerB = new JoystickButton(operatorController, XboxController.Button.kB.value);
         JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
         JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+        
     
 
         /* Button Bindings */
 
        
         driverButton3.onTrue(new Hunt(s_Swerve,s_Vision));
-        //driverTrigger.onTrue(new InstantCommand(() -> s_Intake.stop()));
+        driverButton4.onTrue( new BalanceOnBeamCommand(s_Swerve));
+        driverTrigger.onTrue(new AutoScoreCube( s_Arm, s_Intake, s_Elevator, intakeSpeed, setPosition));
         //operatorController.onTrue(new InstantCommand(() -> s_Intake.spin(-0.5)));
         operatorControllerX.onTrue(new InstantCommand(() -> s_Intake.spin((0.5))));
         operatorControllerX.onFalse(new InstantCommand(() -> s_Intake.stop()));
         operatorControllerB.onTrue(new InstantCommand(() -> s_Intake.spin((-0.5))));
         operatorControllerB.onFalse(new InstantCommand(() -> s_Intake.stop()));
 
-        operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
-        operatorControllerY.onTrue(new InstantCommand(()-> s_Elevator.moveToPosition(25000)));
+        operatorControllerA.onTrue(new InstantCommand(() -> s_Intake.setSpeed(-0.4))); // CUBE
+        operatorControllerY.onTrue(new InstantCommand(()-> s_Intake.setSpeed(0.4))); // CONE
+
+
         
+
+        // if( operatorControllerY.getAsBoolean() ){
+        //     intakeSpeed = -.5;
+            
+        // }
+
+        // if( operatorControllerX.getAsBoolean() ){
+        //     intakeSpeed = .5;
+        // }
+
+        // if( operatorController.getPOV() == 0){
+        //     setPosition = Constants.HIGH_ELEVATOR_VALUE;
+        // } else if (operatorController.getPOV() == 90){
+        //     setPosition = Constants.MID_ELEVATOR_VALUE;
+        // } else if (operatorController.getPOV() == 180){
+        //     setPosition = Constants.LOW_ELEVATOR_VALUE;
+        // }
+            
+
+
 
         operatorControllerLStick.onTrue(new InstantCommand(() -> s_Arm.down()));
         operatorControllerRStick.onTrue(new InstantCommand(() -> s_Arm.up()));
@@ -126,7 +157,7 @@ public class RobotContainer {
         operatorStart.onTrue(new InstantCommand(() -> s_Intake.down()));
 
         new InstantCommand(() ->s_Vision.start());
-        driverTrigger.onTrue( new InstantCommand(() ->s_Swerve.testpitch()));
+        //driverTrigger.onTrue( new InstantCommand(() ->s_Swerve.testpitch()));
         driverButton9.onTrue( new InstantCommand(()-> lights.mode()));
         //driverButton9.onTrue( new InstantCommand(()-> elev.periodic()));
         driverButton7.onTrue( new InstantCommand(() -> s_Swerve.resetModulesToAbsolute()));
@@ -144,13 +175,9 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
        // return new DriveDistance(5, s_Swerve, .1);//A1(s_DriveTilt,s_BalanceOnBeamCommand);//,s_OffBalance,s_Backtilt,s_BalanceOnBeamCommand2);
-        return new InchWormAuto(s_Swerve);
-    
+        return new AutoScoreCube(s_Arm, s_Intake, s_Elevator, 0.4,  25000);
     }
     public void Tilt(){
         SmartDashboard.putNumber("tilt robot", s_Swerve.getPitch());
     }
-    }
-
-
-
+}

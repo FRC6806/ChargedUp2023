@@ -1,5 +1,7 @@
 package frc.robot;
 
+import javax.swing.plaf.basic.BasicComboBoxUI.FocusHandler;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -108,6 +110,9 @@ public final class Constants {
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
+        /* Elevator Values */
+        
+
         /* Module Specific Constants */
         /* Front Right Module - Module 0 */
         public static final class Mod3 { //TODO: This must be tuned to specific robot
@@ -189,6 +194,10 @@ public final class Constants {
      * Gains(kp, ki, kd, kf, izone, peak output);
      */
     static final Gains kGains = new Gains(0.0, 0.0, 0.0, 0.2, 0, 1.0);
+    
+    public static final int HIGH_ELEVATOR_VALUE = 30000; 
+    public static final int MID_ELEVATOR_VALUE = 25000; 
+    public static final int LOW_ELEVATOR_VALUE = 0; 
 
 
 
