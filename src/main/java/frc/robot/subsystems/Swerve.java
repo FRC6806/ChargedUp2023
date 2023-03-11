@@ -51,8 +51,6 @@ public class Swerve extends SubsystemBase {
         mSwerveMods[1].SetBrake();
         mSwerveMods[2].SetBrake();
         mSwerveMods[3].SetBrake();
-
-                        
     }
     public void SetModeCost(){
         mSwerveMods[0].SetCost();

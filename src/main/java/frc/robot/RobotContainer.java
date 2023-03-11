@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -23,6 +22,7 @@ public class RobotContainer {
     /* Controllers */
     private final Joystick driverJoystick = new Joystick(0);
     private final Joystick operatorController = new Joystick(1);
+    private final JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
 
     /* Axis */
     private final int translationAxis = 1;
@@ -44,14 +44,16 @@ public class RobotContainer {
     private final Backtilt s_Backtilt = new Backtilt(s_Swerve);
     private final OffBalance s_OffBalance = new OffBalance(s_Swerve);
     private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
-    //private final Hunt s_Hunt = new Hunt(s_Swerve,s_Vision);
+    // private final Hunt s_Hunt = new Hunt(s_Swerve,s_Vision);
     
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         
-         // Configure the button bindings
+        // Configure the button bindings
         configureButtonBindings();
+
+        s_Elevator.setDefaultCommand(new TeleopElevator(s_Elevator, () ->operatorController.getRawAxis(1)));
 
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -64,7 +66,7 @@ public class RobotContainer {
             )
         );
 
-        s_Vision.setDefaultCommand( new InstantCommand(() -> s_Vision.start(), s_Vision));
+        s_Vision.setDefaultCommand( new InstantCommand(() -> s_Vision.start(), s_Vision) );
 
     }
 
@@ -77,33 +79,33 @@ public class RobotContainer {
     private void configureButtonBindings() {
         
         /* Driver Buttons */
-        private final JoystickButton driverThumbButton = new JoystickButton(driverJoystick, 1);
-        private final JoystickButton driverTrigger = new JoystickButton(driverJoystick, 2);
-        private final JoystickButton driverButton3 = new JoystickButton(driverJoystick, 3);
-        private final JoystickButton driverButton4 = new JoystickButton(driverJoystick, 4);
-        private final JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
-        private final JoystickButton driverButton6 = new JoystickButton(driverJoystick, 6);
-        private final JoystickButton driverButton7 = new JoystickButton(driverJoystick, 7);
-        private final JoystickButton driverButton8 = new JoystickButton(driverJoystick, 8);
-        private final JoystickButton driverButton9 = new JoystickButton(driverJoystick, 9);
+        JoystickButton driverThumbButton = new JoystickButton(driverJoystick, 1);
+        JoystickButton driverTrigger = new JoystickButton(driverJoystick, 2);
+        JoystickButton driverButton3 = new JoystickButton(driverJoystick, 3);
+        JoystickButton driverButton4 = new JoystickButton(driverJoystick, 4);
+       // JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
+        JoystickButton driverButton6 = new JoystickButton(driverJoystick, 6);
+        JoystickButton driverButton7 = new JoystickButton(driverJoystick, 7);
+        JoystickButton driverButton8 = new JoystickButton(driverJoystick, 8);
+        JoystickButton driverButton9 = new JoystickButton(driverJoystick, 9);
 
     
         /* Operator Buttons */
-        private final JoystickButton operatorControllerLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-        private final JoystickButton operatorControllerRightBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-        private final JoystickButton operatorControllerLStick = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
-        private final JoystickButton operatorControllerRStick= new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
-        private final JoystickButton operatorControllerX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-        private final JoystickButton operatorControllerY = new JoystickButton(operatorController, XboxController.Button.kY.value);
-        private final JoystickButton operatorControllerA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-        private final JoystickButton operatorControllerB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-        private final JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
-        private final JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+        JoystickButton operatorControllerLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+        JoystickButton operatorControllerRightBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+        JoystickButton operatorControllerLStick = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
+        JoystickButton operatorControllerRStick= new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
+        JoystickButton operatorControllerX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+        JoystickButton operatorControllerY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        JoystickButton operatorControllerA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+        JoystickButton operatorControllerB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+        JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+        JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     
 
         /* Button Bindings */
 
-        driverButton4.onTrue(new InstantCommand(() -> s_Swerve.driverButton4()));
+       
         driverButton3.onTrue(new Hunt(s_Swerve,s_Vision));
         //driverTrigger.onTrue(new InstantCommand(() -> s_Intake.stop()));
         //operatorController.onTrue(new InstantCommand(() -> s_Intake.spin(-0.5)));
@@ -111,20 +113,15 @@ public class RobotContainer {
         operatorControllerX.onFalse(new InstantCommand(() -> s_Intake.stop()));
         operatorControllerB.onTrue(new InstantCommand(() -> s_Intake.spin((-0.5))));
         operatorControllerB.onFalse(new InstantCommand(() -> s_Intake.stop()));
-        //operatorControllerRightBumper.onFalse(new InstantCommand(() -> s_Intake.stop()));
-        //operatorControllerA.onTrue(new InstantCommand(() -> s_Arm.down()));
-        //operatorControllerY.onTrue(new InstantCommand(() -> s_Arm.up()));
-        operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.manualdown()));
-        operatorControllerA.onFalse(new InstantCommand(() -> s_Elevator.stop()));
-        operatorControllerY.onTrue(new InstantCommand(()-> s_Elevator.manualup()));
-        operatorControllerY.onFalse(new InstantCommand(() -> s_Elevator.stop()));
+
+        operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
+        operatorControllerY.onTrue(new InstantCommand(()-> s_Elevator.moveToPosition(25000)));
+        
 
         operatorControllerLStick.onTrue(new InstantCommand(() -> s_Arm.down()));
         operatorControllerRStick.onTrue(new InstantCommand(() -> s_Arm.up()));
 
-        driverThumbButton.onTrue(new InchWorm(s_Swerve));
-        //operatorStart.onTrue(new InstantCommand(() -> s_Arm.compressoff()));
-        //operatorBack.onTrue(new InstantCommand(() -> s_Arm.off()));
+        driverThumbButton.onTrue(new InchWormAuto(s_Swerve));
         operatorBack.onTrue(new InstantCommand(() -> s_Intake.up()));
         operatorStart.onTrue(new InstantCommand(() -> s_Intake.down()));
 
@@ -146,8 +143,8 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        //return new DriveDistance(5, s_Swerve, .1);//A1(s_DriveTilt,s_BalanceOnBeamCommand);//,s_OffBalance,s_Backtilt,s_BalanceOnBeamCommand2);
-        return new InstantCommand(() -> s_Swerve.driveDistance(1, .2));
+       // return new DriveDistance(5, s_Swerve, .1);//A1(s_DriveTilt,s_BalanceOnBeamCommand);//,s_OffBalance,s_Backtilt,s_BalanceOnBeamCommand2);
+        return new InchWormAuto(s_Swerve);
     
     }
     public void Tilt(){
