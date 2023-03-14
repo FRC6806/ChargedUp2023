@@ -107,10 +107,10 @@ public final class Constants {
         public static final double maxAngularVelocity = .01; //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
-        public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+        public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
-        /* Elevator Values */
+        
         
 
         /* Module Specific Constants */
@@ -195,10 +195,11 @@ public final class Constants {
      */
     static final Gains kGains = new Gains(0.0, 0.0, 0.0, 0.2, 0, 1.0);
     
+    /* Elevator Values */
     public static final int HIGH_ELEVATOR_VALUE = 30000; 
     public static final int MID_ELEVATOR_VALUE = 25000; 
     public static final int LOW_ELEVATOR_VALUE = 0; 
-
-
+    public static final double CONE_SPEED = -0.4; 
+    public static final double CUBE_SPEED = 0.4; 
 
 }

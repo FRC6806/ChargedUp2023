@@ -45,8 +45,6 @@ public class BalanceOnBeamCommand3 extends CommandBase {
 
     //drivePower = Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
 
-
-
     // Our robot needed an extra push to drive up in reverse, probably due to weight imbalances
     if (drivePower < 0) {
       drivePower *= Constants.BACKWARDS_BALANCING_EXTRA_POWER_MULTIPLIER;

@@ -20,7 +20,7 @@ public class TeleopElevator extends CommandBase {
     public TeleopElevator(Elevator s_Elevator, DoubleSupplier joystickValue) {
         this.s_Elevator = s_Elevator;
         addRequirements(s_Elevator);
-        this.joystickValue= joystickValue;
+        this.joystickValue = joystickValue;
     }
 
 
@@ -29,5 +29,6 @@ public class TeleopElevator extends CommandBase {
 
         /* Drive */
         s_Elevator.manualMove( joystickValue);
+
     }
 }

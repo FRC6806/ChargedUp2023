@@ -13,20 +13,26 @@ public class DriveDistance extends CommandBase {
     private double initalstate;
     private double speed;
     
-    public DriveDistance(double desiredstateFeet,Swerve s_Swerve, double speed) {
+    public DriveDistance(double desiredstateFeet, Swerve s_Swerve, double speed) {
         
         this.s_Swerve = s_Swerve;
-        this.desiredState = desiredstateFeet*8.889;
+        this.desiredState = desiredstateFeet*15.4839;
         initalstate = s_Swerve.mSwerveMods[0].getPosition().distanceMeters;
-        this.speed = speed;
+
+        if( desiredState < 0 ){
+            this.speed = -speed;
+        } else {
+            this.speed = speed;
+        }
 
         addRequirements(s_Swerve);
       
     }
 
 public void intitialize(){
-   initalstate = Math.abs((s_Swerve.mSwerveMods[0].getPosition().distanceMeters + s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4);
-   currentstate = Math.abs((s_Swerve.mSwerveMods[0].getPosition().distanceMeters + s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0);          
+   initalstate = (s_Swerve.mSwerveMods[0].getPosition().distanceMeters);// + s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0;
+   currentstate = (s_Swerve.mSwerveMods[0].getPosition().distanceMeters); //+ s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0;          
+
 }
 
 public void end(boolean interupted){
@@ -39,19 +45,26 @@ public void end(boolean interupted){
 }
 
 public boolean isFinished(){
-    return desiredState < Math.abs(currentstate-initalstate);
-    
+    if(desiredState < 0){
+        return currentstate < initalstate + desiredState;
+    }else{
+        return currentstate > initalstate + desiredState;
+    }
+ 
+
 }
 
     @Override
     public void execute() {
+ 
+
         s_Swerve.drive(
             new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed), 
             0 * Constants.Swerve.maxAngularVelocity, 
             false,//robotCentricSup.getAsBoolean(), 
             true
         );  
-        currentstate = Math.abs((s_Swerve.mSwerveMods[0].getPosition().distanceMeters + s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0);          
+        currentstate = (s_Swerve.mSwerveMods[0].getPosition().distanceMeters );//+ s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0;          
         SmartDashboard.putNumber("inital state", initalstate);
         SmartDashboard.putNumber("current state", currentstate);
         SmartDashboard.putNumber("desiredState", desiredState);

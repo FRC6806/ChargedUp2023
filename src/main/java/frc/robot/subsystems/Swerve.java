@@ -26,7 +26,7 @@ public class Swerve extends SubsystemBase {
 
     public Swerve() {
         
-
+        
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -34,7 +34,7 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
-        
+        SetModeBrake();
         gyro.configFactoryDefault();
         zeroGyro();
 

@@ -13,13 +13,13 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 
-public class AutoScoreCube extends SequentialCommandGroup {    
+public class AutoScore extends SequentialCommandGroup {    
 
-    private Arm s_arm;   
+    private Arm s_arm;
     private Intake s_Intake;
     private Elevator s_Elevator;
     
-    public AutoScoreCube(Arm s_arm, Intake s_Intake, Elevator s_Elevator, double speed, int position) {
+    public AutoScore(Arm s_arm, Intake s_Intake, Elevator s_Elevator) {
         
         this.s_Intake = s_Intake;
         this.s_arm = s_arm;
@@ -34,18 +34,18 @@ public class AutoScoreCube extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> s_arm.down()),
             new WaitCommand(1),
-            new InstantCommand(() -> s_Elevator.moveToPosition(position)),
+            new InstantCommand(() -> s_Elevator.moveToPosition()),
             new WaitCommand(5),
             new InstantCommand(() -> s_Intake.down()),
             new WaitCommand(1),
-            new InstantCommand(() -> s_Intake.spin(speed)),
-            new WaitCommand(1),
-            new InstantCommand(() -> s_Intake.up()),
+            new InstantCommand(() -> s_Intake.outTake()),
             new WaitCommand(1),
             new InstantCommand(() -> s_Intake.stop()),
             new WaitCommand(1),
+            new InstantCommand(() -> s_Intake.up()),
+            new WaitCommand(1),
             new InstantCommand(() -> s_Elevator.moveToPosition(0)),
-            new WaitCommand(3),
+            new WaitCommand(2),
             new InstantCommand(() -> s_arm.up())
         );
     }

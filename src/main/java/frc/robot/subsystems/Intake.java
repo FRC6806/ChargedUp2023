@@ -33,8 +33,12 @@ public class Intake extends SubsystemBase {
         intakeMotor.set(speed);
     }
 
-    public void spin(){
+    public void outTake(){
         intakeMotor.set(speed);
+    }
+
+    public void inTake(){
+        intakeMotor.set(-speed);
     }
 
     public void stop(){

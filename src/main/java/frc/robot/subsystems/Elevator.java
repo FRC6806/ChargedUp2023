@@ -55,17 +55,14 @@ public class Elevator extends SubsystemBase {
 public Elevator(int canone,int cantwo){
     double m_targetMin = 0;
 	double m_targetMax = 25000;
-	double m_targetHigh = 40000;
+	double m_targetHigh = 30000;
     
     first = new WPI_TalonFX(canone);
     second = new WPI_TalonFX(cantwo);
     _sb = new StringBuilder();
     /* Hardware */
-	WPI_TalonFX _talon = new WPI_TalonFX(24, "rio"); // Rename "rio" to match the CANivore device name if using a CANivore
-	// WPI_TalonFX _talon2 = new WPI_TalonFX(25, "rio");
 	Joystick _joy = new Joystick(1);
 
-	BaseMotorController _follower1 = new WPI_TalonFX(25, "rio");
 	/* Used to build string throughout loop */
 	StringBuilder _sb = new StringBuilder();
 
@@ -96,6 +93,7 @@ public Elevator(int canone,int cantwo){
 		 */
 		first.setSensorPhase(true);
 		first.setInverted(false);
+
 		/*
 		 * Talon FX does not need sensor phase set for its integrated sensor
 		 * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
@@ -118,11 +116,6 @@ public Elevator(int canone,int cantwo){
 		/* Set Motion Magic gains in slot0 - see documentation */
 		first.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
 
-		// _talon.config_kF(Constants.kSlotIdx, Constants.kGains.kF, Constants.kTimeoutMs);
-		// _talon.config_kP(Constants.kSlotIdx, Constants.kGains.kP, Constants.kTimeoutMs);
-		// _talon.config_kI(Constants.kSlotIdx, Constants.kGains.kI, Constants.kTimeoutMs);
-		// _talon.config_kD(Constants.kSlotIdx, Constants.kGains.kD, Constants.kTimeoutMs);
-
 		first.config_kF(Constants.kSlotIdx, 0.238, Constants.kTimeoutMs);
 		first.config_kP(Constants.kSlotIdx, 0.069, Constants.kTimeoutMs);
 		first.config_kI(Constants.kSlotIdx, 0.001, Constants.kTimeoutMs);
@@ -130,12 +123,12 @@ public Elevator(int canone,int cantwo){
 
 		/* Set acceleration and vcruise velocity - see documentation */
 		first.configMotionCruiseVelocity(1022,Constants.kTimeoutMs);
-		first.configMotionAcceleration(300, Constants.kTimeoutMs);
+		first.configMotionAcceleration(100, Constants.kTimeoutMs);
 
 		/* Zero the sensor once on robot boot up */
 		first.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
     
-
+        first.set(TalonFXControlMode.PercentOutput, 0);
 
 }
 
@@ -183,6 +176,19 @@ public void moveToPosition(int position){
     Instrum.Process(first, _sb);
 }
 
+public void moveToPosition(){
+    double targetPos = position;
+    double horizontalHoldOutput = .13;
+    first.set(TalonFXControlMode.MotionMagic, targetPos);
+
+    /* Append more signals to print when in speed mode */
+    _sb.append("\t err:");
+    _sb.append(first.getClosedLoopError(Constants.kPIDLoopIdx));
+    _sb.append("\t trg:");
+    _sb.append(targetPos);
+    Instrum.Process(first, _sb);
+}
+
 
 public void manualMove(DoubleSupplier joystick){
     double speed = joystick.getAsDouble();
@@ -193,7 +199,7 @@ public void manualMove(DoubleSupplier joystick){
 
 public void stop(){
     first.set(TalonFXControlMode.PercentOutput, 0);
-    second.set(TalonFXControlMode.PercentOutput, 0);
+
 }
 
     public void periodic() {
@@ -207,7 +213,7 @@ public void stop(){
         SmartDashboard.putData("Lift Mode", Mode);
 
         SmartDashboard.putNumber("Elevator Encoder 1", first.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Elevator Encoder 2", second.getSelectedSensorPosition());
+    
         
     }
 
