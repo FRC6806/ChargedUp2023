@@ -61,7 +61,7 @@ public boolean isFinished(){
         s_Swerve.drive(
             new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed), 
             0 * Constants.Swerve.maxAngularVelocity, 
-            false,//robotCentricSup.getAsBoolean(), 
+            true,//robotCentricSup.getAsBoolean(), 
             true
         );  
         currentstate = (s_Swerve.mSwerveMods[0].getPosition().distanceMeters );//+ s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0;          

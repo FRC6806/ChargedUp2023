@@ -7,17 +7,28 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private CANSparkMax intakeMotor;
+    SendableChooser<String> Mode = new SendableChooser<String>();
+    private PWMSparkMax intakeMotor;
+    
+    
+    
+    
+    
     private DoubleSolenoid intakeSlant;
     private PneumaticHub hub = new PneumaticHub(17);
     private double speed; 
 
     public Intake(int intakeMotorCAN, int port_2,int port_3){
-        intakeMotor = new CANSparkMax(intakeMotorCAN, MotorType.kBrushless);
-        intakeMotor.setIdleMode(IdleMode.kBrake);
+        intakeMotor = new PWMSparkMax(1);
+
+        //intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeSlant = new DoubleSolenoid(17, PneumaticsModuleType.REVPH,port_2, port_3);
     }
 
@@ -33,11 +44,11 @@ public class Intake extends SubsystemBase {
         intakeMotor.set(speed);
     }
 
-    public void outTake(){
+    public void outtake(){
         intakeMotor.set(speed);
     }
 
-    public void inTake(){
+    public void intake(){
         intakeMotor.set(-speed);
     }
 
@@ -54,8 +65,24 @@ public class Intake extends SubsystemBase {
         intakeSlant.set(DoubleSolenoid.Value.kForward); 
     }
 
-    @Override
     public void periodic(){
+        Mode.addOption("Cone", "Co");
+        Mode.addOption("Cube", "Cu");
         
+        SmartDashboard.putData("Cone/Cube", Mode);
+        SmartDashboard.putNumber("Intake Speed", getSpeed());
     }
+
+    public void setElement(){
+        String element = Mode.getSelected();
+
+        if (element.equals("Cube")){
+            setSpeed(Constants.CUBE_SPEED);
+        } else if (element.equals("Cone")){
+            setSpeed(Constants.CONE_SPEED);
+        } 
+
+    }
+
+
 } 

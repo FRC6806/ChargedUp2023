@@ -28,7 +28,18 @@ public class TeleopElevator extends CommandBase {
     public void execute() {
 
         /* Drive */
-        s_Elevator.manualMove( joystickValue);
+        if (s_Elevator.getENcoder() < 48000){
 
+
+
+
+
+
+
+
+        s_Elevator.manualMove( joystickValue);
+        }else{
+            s_Elevator.setZero();
+        }
     }
 }

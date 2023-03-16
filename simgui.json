@@ -1,0 +1,13 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX [24]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [25]": "Motor Controller",
+      "/SmartDashboard/Cone/Cube": "String Chooser",
+      "/SmartDashboard/Lift Mode": "String Chooser",
+      "/SmartDashboard/SendableChooser[2]": "String Chooser"
+    }
+  }
+}

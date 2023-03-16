@@ -38,7 +38,7 @@ public class AutoScore extends SequentialCommandGroup {
             new WaitCommand(5),
             new InstantCommand(() -> s_Intake.down()),
             new WaitCommand(1),
-            new InstantCommand(() -> s_Intake.outTake()),
+            new InstantCommand(() -> s_Intake.outtake()),
             new WaitCommand(1),
             new InstantCommand(() -> s_Intake.stop()),
             new WaitCommand(1),

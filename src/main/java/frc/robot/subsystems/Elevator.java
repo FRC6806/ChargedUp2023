@@ -117,13 +117,13 @@ public Elevator(int canone,int cantwo){
 		first.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
 
 		first.config_kF(Constants.kSlotIdx, 0.238, Constants.kTimeoutMs);
-		first.config_kP(Constants.kSlotIdx, 0.069, Constants.kTimeoutMs);
+		first.config_kP(Constants.kSlotIdx, 0.039, Constants.kTimeoutMs); //.069
 		first.config_kI(Constants.kSlotIdx, 0.001, Constants.kTimeoutMs);
 		first.config_kD(Constants.kSlotIdx, 0.69, Constants.kTimeoutMs);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		first.configMotionCruiseVelocity(1022,Constants.kTimeoutMs);
-		first.configMotionAcceleration(100, Constants.kTimeoutMs);
+		first.configMotionCruiseVelocity(1522,Constants.kTimeoutMs); //1422
+		first.configMotionAcceleration(325, Constants.kTimeoutMs);//300
 
 		/* Zero the sensor once on robot boot up */
 		first.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
@@ -135,31 +135,23 @@ public Elevator(int canone,int cantwo){
 
 
     
-public int getdist(){
-    String height = SmartDashboard.getString("Lift Mode", "");
+public void setLevel(){
+    String height = Mode.getSelected();
 
-    if (height.equals("High Cone")){
-        return 0;
+    if (height.equals("High")){
+        setPosition(Constants.HIGH_ELEVATOR_VALUE);
+        SmartDashboard.putNumber("level",3);
     }
-    else if (height == "med Cone"){
-        return 20000;
+    else if (height.equals("Med")){
+        setPosition(Constants.MID_ELEVATOR_VALUE);
+        SmartDashboard.putNumber("level",2);
     }
-    else if(height == "Low Cone" ){
-        return 0;
-    }
-    else if (height == "high cube"){
-        return 0;
+    else if(height.equals("Low")){
+        setPosition(Constants.LOW_ELEVATOR_VALUE);
+        SmartDashboard.putNumber("level",1);
+        
+    } 
 
-    }
-    else if (height == "Mid Cube"){
-        return 0;
-    }
-    else if (height == "Low Cube"){
-        return 0;
-    }
-    else{
-        return 0;
-    }
  }
 
 
@@ -198,7 +190,13 @@ public void manualMove(DoubleSupplier joystick){
 
 
 public void stop(){
-    first.set(TalonFXControlMode.PercentOutput, 0);
+    first.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+    first.setSelectedSensorPosition(0);
+
+}
+
+public void setZero(){
+    first.set(ControlMode.PercentOutput, 0);
 
 }
 
@@ -210,8 +208,12 @@ public void stop(){
         Mode.addOption("High Cube", "HCube");
         Mode.addOption("Med Cube", "MCube");
         Mode.addOption("Low Cube", "LCube");
-        SmartDashboard.putData("Lift Mode", Mode);
 
+        Mode.addOption("High", "H");
+        Mode.addOption("Med", "M");
+        Mode.addOption("Low", "L");
+
+        SmartDashboard.putData("Lift Mode", Mode);
         SmartDashboard.putNumber("Elevator Encoder 1", first.getSelectedSensorPosition());
     
         
@@ -223,5 +225,8 @@ public void stop(){
 
     public void setPosition(int position){
         this.position = position; 
+    }
+    public double getENcoder(){
+        return first.getSelectedSensorPosition(); 
     }
 }
