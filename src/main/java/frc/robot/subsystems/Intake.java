@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,7 +16,7 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
     SendableChooser<String> Mode = new SendableChooser<String>();
-    private PWMSparkMax intakeMotor;
+    private PWMTalonFX intakeMotor;
     
     
     
@@ -26,7 +27,7 @@ public class Intake extends SubsystemBase {
     private double speed; 
 
     public Intake(int intakeMotorCAN, int port_2,int port_3){
-        intakeMotor = new PWMSparkMax(1);
+        intakeMotor = new PWMTalonFX(1);
 
         //intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeSlant = new DoubleSolenoid(17, PneumaticsModuleType.REVPH,port_2, port_3);

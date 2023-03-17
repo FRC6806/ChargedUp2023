@@ -196,7 +196,7 @@ public final class Constants {
     static final Gains kGains = new Gains(0.0, 0.0, 0.0, 0.2, 0, 1.0);
     
     /* Elevator Values */
-    public static final int HIGH_ELEVATOR_VALUE = 30000; 
+    public static final int HIGH_ELEVATOR_VALUE = 43000; 
     public static final int MID_ELEVATOR_VALUE = 25000; 
     public static final int LOW_ELEVATOR_VALUE = 0; 
     public static final double CONE_SPEED = -0.4; 

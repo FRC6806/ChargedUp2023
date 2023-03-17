@@ -49,6 +49,8 @@ public class RobotContainer {
     private final Backtilt s_Backtilt = new Backtilt(s_Swerve);
     private final OffBalance s_OffBalance = new OffBalance(s_Swerve);
     private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
+    private final AutoIntake1 s_AutoIntake1 = new AutoIntake1(s_Arm, s_Intake, s_Elevator);
+    private final AutoIntake2 s_AutoIntake2 = new AutoIntake2(s_Arm, s_Intake, s_Elevator);
 
 
     private double intakeSpeed = 0;
@@ -59,9 +61,9 @@ public class RobotContainer {
 
     // Autos
 
-    private final Command m_simpleAuto = new AutoNavigate(s_Arm, s_Intake, s_Elevator, s_Swerve, 0, 0); 
-    private final Command m_complexAuto = new AutoScore( s_Arm, s_Intake, s_Elevator); 
-    private final Command m_driveDistance = new DriveDistance(5, s_Swerve, .1);
+    private final Command m_midAuto = new AutoMidCube(s_Swerve, s_Arm, s_Intake, s_Elevator, .5,  25000); 
+    private final Command m_highAuto = new AutoHighCube(s_Swerve, s_Arm, s_Intake, s_Elevator, .5,  41000); 
+    // private final Command m_driveDistance = new DriveDistance(5, s_Swerve, .1);
     SendableChooser<Command> m_Chooser = new SendableChooser<>(); 
 
     
@@ -92,9 +94,8 @@ public class RobotContainer {
 
         s_Elevator.stop();
 
-        m_Chooser.setDefaultOption("Simple Auto", m_simpleAuto);
-        m_Chooser.addOption("Complex Auto", m_complexAuto);
-        m_Chooser.addOption("Drive Distance", m_driveDistance);
+        m_Chooser.setDefaultOption("Mid Cube Auto", m_midAuto);
+        m_Chooser.addOption("High Cube Auto", m_highAuto);
         SmartDashboard.putData(m_Chooser);
 
     }
@@ -114,8 +115,8 @@ public class RobotContainer {
 
 
         /* Driver Buttons */
-        JoystickButton driverThumbButton = new JoystickButton(driverJoystick, 2);
         JoystickButton driverTrigger = new JoystickButton(driverJoystick, 1);
+        JoystickButton driverButton2 = new JoystickButton(driverJoystick, 2);
         JoystickButton driverButton3 = new JoystickButton(driverJoystick, 3);
         JoystickButton driverButton4 = new JoystickButton(driverJoystick, 4);
        // JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
@@ -139,11 +140,30 @@ public class RobotContainer {
         POVButton operatorDpadUp = new POVButton(operatorController, 0);
         POVButton operatorDpadDown = new POVButton(operatorController, 180);
         POVButton operatorDpadRight = new POVButton(operatorController, 90);
-
+        
         /* Button Bindings */       
         driverButton3.onTrue(new Hunt(s_Swerve , s_Vision));
         driverButton4.onTrue( new BalanceOnBeamCommand(s_Swerve));
-        driverTrigger.onTrue(new AutoScore( s_Arm, s_Intake, s_Elevator));
+        driverTrigger.onTrue(new AutoScore( s_Arm, s_Intake, s_Elevator,43000)); 
+        driverButton6.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
+        driverTrigger.onTrue(new AutoIntake1(s_Arm, s_Intake, s_Elevator));
+        driverTrigger.toggleOnFalse(new AutoIntake2(s_Arm, s_Intake, s_Elevator));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         // driverButton8.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(45000)));
         // driverButton7.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
         driverButton9.onTrue(new DriveDistance(-4, s_Swerve, 0.2));
@@ -156,15 +176,12 @@ public class RobotContainer {
         // operatorControllerA.onTrue(new InstantCommand(() -> s_Intake.setSpeed(Constants.CUBE_SPEED)));
         operatorControllerY.onTrue(new InstantCommand(()-> s_Intake.setSpeed(Constants.CONE_SPEED)));
 
-        operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(Constants.HIGH_ELEVATOR_VALUE)));
-        // operatorDpadUp.onTrue(new InstantCommand(()-> s_Elevator.moveToPosition(Constants.HIGH_ELEVATOR_VALUE)));
-        // if (operatorDpadUp.getAsBoolean()){
-        //     // Shuffleboard.getTab("Tab 1").add("Height", "High");
-        //     SmartDashboard.putString("Height", "High");
-        // }
-        
-        // operatorDpadDown.onTrue(new InstantCommand(()-> s_Elevator.setPosition(Constants.LOW_ELEVATOR_VALUE)));
-        // operatorDpadRight.onTrue(new InstantCommand(()-> s_Elevator.setPosition(Constants.MID_ELEVATOR_VALUE)));
+        //operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.setPosition(Constants.HIGH_ELEVATOR_VALUE)));
+        //operatorDpadUp.onTrue(new InstantCommand(()-> s_Elevator.moveToPosition(Constants.HIGH_ELEVATOR_VALUE)));
+        operatorDpadUp.onTrue(new AutoScore(s_Arm, s_Intake, s_Elevator,Constants.HIGH_ELEVATOR_VALUE));
+        //operatorDpadDown.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(Constants.LOW_ELEVATOR_VALUE)));
+        operatorDpadDown.onTrue(new AutoScore(s_Arm, s_Intake, s_Elevator,Constants.LOW_ELEVATOR_VALUE));
+        operatorDpadRight.onTrue(new AutoScore(s_Arm, s_Intake, s_Elevator,Constants.MID_ELEVATOR_VALUE));
         
         operatorControllerLStick.onTrue(new InstantCommand(() -> s_Arm.down()));
         operatorControllerRStick.onTrue(new InstantCommand(() -> s_Arm.up()));
@@ -187,18 +204,17 @@ public class RobotContainer {
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
-     * @return the command to run in autonomous
+     * @return the command to run +in autonomous
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
        // return new DriveDistance(5, s_Swerve, .1);//A1(s_DriveTilt,s_BalanceOnBeamCommand);//,s_OffBalance,s_Backtilt,s_BalanceOnBeamCommand2);
-      
-      
         //  return new DriveDistance(-14, s_Swerve, .2); 
-        return new AutoScoreCube(s_Swerve,s_Arm, s_Intake, s_Elevator, .5,  25000);
-        // return m_Chooser.getSelected();
-
-        // return 
+        return new AutoMidCube(s_Swerve,s_Arm, s_Intake, s_Elevator, .5,  25000); // 25000
+        
+        //return new BalanceOnBeamCommand(s_Swerve);
+        //return new DriveTilt(s_Swerve);
+        //return m_Chooser.getSelected();
     }
 
     

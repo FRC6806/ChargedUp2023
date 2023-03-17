@@ -116,14 +116,14 @@ public Elevator(int canone,int cantwo){
 		/* Set Motion Magic gains in slot0 - see documentation */
 		first.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
 
-		first.config_kF(Constants.kSlotIdx, 0.238, Constants.kTimeoutMs);
-		first.config_kP(Constants.kSlotIdx, 0.039, Constants.kTimeoutMs); //.069
+		first.config_kF(Constants.kSlotIdx, 0.05, Constants.kTimeoutMs); //0.238
+		first.config_kP(Constants.kSlotIdx, 0.05, Constants.kTimeoutMs); //.069
 		first.config_kI(Constants.kSlotIdx, 0.001, Constants.kTimeoutMs);
-		first.config_kD(Constants.kSlotIdx, 0.69, Constants.kTimeoutMs);
+		first.config_kD(Constants.kSlotIdx, 0.85, Constants.kTimeoutMs);//.85
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		first.configMotionCruiseVelocity(1522,Constants.kTimeoutMs); //1422
-		first.configMotionAcceleration(325, Constants.kTimeoutMs);//300
+		first.configMotionCruiseVelocity(6806, Constants.kTimeoutMs); //1422
+		first.configMotionAcceleration(3403, Constants.kTimeoutMs);//300
 
 		/* Zero the sensor once on robot boot up */
 		first.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);

@@ -28,7 +28,7 @@ public class TeleopElevator extends CommandBase {
     public void execute() {
 
         /* Drive */
-        if (s_Elevator.getENcoder() < 48000){
+        if (s_Elevator.getENcoder() < 42000){
 
 
 

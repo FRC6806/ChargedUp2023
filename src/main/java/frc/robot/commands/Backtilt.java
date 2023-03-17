@@ -45,7 +45,7 @@ public boolean isFinished(){
         error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
         
             s_Swerve.drive(
-              new Translation2d(-.1, 0).times(Constants.Swerve.maxSpeed), 
+              new Translation2d(.15, 0).times(Constants.Swerve.maxSpeed), 
               0 * Constants.Swerve.maxAngularVelocity, 
               true,//robotCentricSup.getAsBoolean(), 
               true
