@@ -27,7 +27,6 @@ public class AutoHighCube extends SequentialCommandGroup {
         this.s_arm = s_arm;
         this.s_Elevator = s_Elevator;
 
-
         addRequirements(s_arm);
         addRequirements(s_Intake);
         addRequirements(s_Elevator);
@@ -37,15 +36,12 @@ public class AutoHighCube extends SequentialCommandGroup {
             new InstantCommand(() -> s_arm.up()),
             new WaitCommand(1),
             new InstantCommand(() -> s_Elevator.moveToPosition(position)),
-            new WaitCommand(7),
+            new WaitCommand(2),
             new InstantCommand(() -> s_Intake.spin(speed)),
-            new WaitCommand(.2),
-            new InstantCommand(() -> s_Intake.up()),
-            new WaitCommand(1),
+            new WaitCommand(.4),
             new InstantCommand(() -> s_Intake.stop()),
-            new WaitCommand(1),
             new InstantCommand(() -> s_Elevator.moveToPosition(0)),
-            new WaitCommand(5),
+            new WaitCommand(2),
             new InstantCommand(() -> s_arm.down())
            // new InstantCommand(() -> new DriveDistance(-16, s_swerve, .2))
         );

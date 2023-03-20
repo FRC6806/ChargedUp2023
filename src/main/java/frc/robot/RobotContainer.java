@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
-import frc.robot.autos.AutoScore;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -44,11 +43,11 @@ public class RobotContainer {
     private final Elevator s_Elevator = new Elevator(24,25);
     
     /* Commands */
-    private final BalanceOnBeamCommand3 s_BalanceOnBeamCommand = new BalanceOnBeamCommand3(s_Swerve);
+    //private final BalanceOnBeamCommand3 s_BalanceOnBeamCommand = new BalanceOnBeamCommand3(s_Swerve);
     private final DriveTilt s_DriveTilt = new DriveTilt(s_Swerve);
     private final Backtilt s_Backtilt = new Backtilt(s_Swerve);
     private final OffBalance s_OffBalance = new OffBalance(s_Swerve);
-    private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
+    //private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
     private final AutoIntake1 s_AutoIntake1 = new AutoIntake1(s_Arm, s_Intake, s_Elevator);
     private final AutoIntake2 s_AutoIntake2 = new AutoIntake2(s_Arm, s_Intake, s_Elevator);
 
@@ -142,6 +141,7 @@ public class RobotContainer {
         POVButton operatorDpadRight = new POVButton(operatorController, 90);
         
         /* Button Bindings */       
+        driverButton2.onTrue(new BalanceOnBeamCommand(s_Swerve));
         driverButton3.onTrue(new Hunt(s_Swerve , s_Vision));
         driverButton4.onTrue( new BalanceOnBeamCommand(s_Swerve));
         driverTrigger.onTrue(new AutoScore( s_Arm, s_Intake, s_Elevator,43000)); 
@@ -178,10 +178,10 @@ public class RobotContainer {
 
         //operatorControllerA.onTrue(new InstantCommand(() -> s_Elevator.setPosition(Constants.HIGH_ELEVATOR_VALUE)));
         //operatorDpadUp.onTrue(new InstantCommand(()-> s_Elevator.moveToPosition(Constants.HIGH_ELEVATOR_VALUE)));
-        operatorDpadUp.onTrue(new AutoScore(s_Arm, s_Intake, s_Elevator,Constants.HIGH_ELEVATOR_VALUE));
+        operatorDpadUp.onTrue(new AutoHighCube(s_Swerve, s_Arm, s_Intake, s_Elevator, 0.4, Constants.HIGH_ELEVATOR_VALUE));
         //operatorDpadDown.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(Constants.LOW_ELEVATOR_VALUE)));
         operatorDpadDown.onTrue(new AutoScore(s_Arm, s_Intake, s_Elevator,Constants.LOW_ELEVATOR_VALUE));
-        operatorDpadRight.onTrue(new AutoScore(s_Arm, s_Intake, s_Elevator,Constants.MID_ELEVATOR_VALUE));
+        operatorDpadRight.onTrue(new AutoMidCube(s_Swerve, s_Arm, s_Intake, s_Elevator, 0.4, Constants.MID_ELEVATOR_VALUE));
         
         operatorControllerLStick.onTrue(new InstantCommand(() -> s_Arm.down()));
         operatorControllerRStick.onTrue(new InstantCommand(() -> s_Arm.up()));
@@ -208,10 +208,12 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-       // return new DriveDistance(5, s_Swerve, .1);//A1(s_DriveTilt,s_BalanceOnBeamCommand);//,s_OffBalance,s_Backtilt,s_BalanceOnBeamCommand2);
+        // return new DriveDistance(5, s_Swerve, .1);//A1(s_DriveTilt,s_BalanceOnBeamCommand);//,s_OffBalance,s_Backtilt,s_BalanceOnBeamCommand2);
         //  return new DriveDistance(-14, s_Swerve, .2); 
-        return new AutoMidCube(s_Swerve,s_Arm, s_Intake, s_Elevator, .5,  25000); // 25000
-        
+        //return new AutoHighCube(s_Swerve,s_Arm, s_Intake, s_Elevator, .4,  Constants.HIGH_ELEVATOR_VALUE); // 25000
+        // return new DriveDistance(8, s_Swerve, .2); 
+        //return new DriveTilt(s_Swerve);
+        return new AutoHighCubeBalance(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
         //return new BalanceOnBeamCommand(s_Swerve);
         //return new DriveTilt(s_Swerve);
         //return m_Chooser.getSelected();

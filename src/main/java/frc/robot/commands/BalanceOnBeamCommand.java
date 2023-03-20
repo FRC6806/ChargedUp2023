@@ -36,12 +36,13 @@ public class BalanceOnBeamCommand extends CommandBase {
     // Uncomment the line below this to simulate the gyroscope axis with a controller joystick
     // Double currentAngle = -1 * Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
     this.currentAngle = s_Swerve.getPitch();
-
     error = (currentAngle - Constants.BEAM_BALANCED_GOAL_DEGREES);
-    error = Math.pow(error, .25);
-    
     drivePower = Math.min(Math.abs( Constants.BEAM_BALANACED_DRIVE_KP * error) , 1);
     drivePower = Math.copySign(drivePower, error);
+    
+    error = Math.pow(Math.abs(error), .25);
+    
+    
 
 
     //drivePower = Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
@@ -54,8 +55,8 @@ public class BalanceOnBeamCommand extends CommandBase {
     }
 
     // Limit the max power
-    if (Math.abs(drivePower) > 0.2) {
-      drivePower = Math.copySign(0.1, drivePower);
+    if (Math.abs(drivePower) > 0.25) {
+      drivePower = Math.copySign(0.15, drivePower);
     }
 
     s_Swerve.drive(new Translation2d(drivePower, 0).times(Constants.Swerve.maxSpeed),
@@ -78,12 +79,12 @@ public class BalanceOnBeamCommand extends CommandBase {
             false,//robotCentricSup.getAsBoolean(), 
             true
         );
-    s_Swerve.SetModeCost();
+    //s_Swerve.SetModeCost();
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() { 
     return Math.abs(error) < Constants.BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES; // End the command when we are within the specified threshold of being 'flat' (gyroscope pitch of 0 degrees)
   }
 }

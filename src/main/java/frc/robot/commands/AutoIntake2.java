@@ -28,7 +28,7 @@ public class AutoIntake2 extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> s_Intake.stop()),
             new InstantCommand(() -> s_Elevator.moveToPosition(0)),
-            new WaitCommand(4),
+            new WaitCommand(1.5),
             new InstantCommand(() -> s_Arm.down())
         );
     }
