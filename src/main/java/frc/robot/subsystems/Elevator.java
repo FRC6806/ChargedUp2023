@@ -32,6 +32,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
@@ -51,8 +52,12 @@ public class Elevator extends SubsystemBase {
     private WPI_TalonFX second;
     private int position;
     StringBuilder _sb;
+    // DigitalInput bottomlimitSwitch1 = new DigitalInput(1);
+    // DigitalInput bottomlimitSwitch2 = new DigitalInput(3);
+    // DigitalInput toplimitSwitch1 = new DigitalInput(0);
+    // DigitalInput toplimitSwitch2 = new DigitalInput(2);
 
-public Elevator(int canone,int cantwo){
+public Elevator(int canone, int cantwo){
     double m_targetMin = 0;
 	double m_targetMax = 25000;
 	double m_targetHigh = 30000;
@@ -173,13 +178,15 @@ public void moveToPosition(){
     double horizontalHoldOutput = .13;
     first.set(TalonFXControlMode.MotionMagic, targetPos);
 
-    /* Append more signals to print when in speed mode */
+    /* Append more signalb s to print when in speed mode */
     _sb.append("\t err:");
     _sb.append(first.getClosedLoopError(Constants.kPIDLoopIdx));
     _sb.append("\t trg:");
     _sb.append(targetPos);
     Instrum.Process(first, _sb);
 }
+
+
 
 
 public void manualMove(DoubleSupplier joystick){
@@ -200,7 +207,16 @@ public void setZero(){
 
 }
 
-    public void periodic() {
+// public boolean getBottomLimitSwitches(){
+//     return !(bottomlimitSwitch1.get() && bottomlimitSwitch2.get());
+// }
+
+// public boolean getTopLimitSwitches(){
+//     return !(toplimitSwitch1.get() || toplimitSwitch2.get());
+// }
+
+
+public void periodic() {
         
         Mode.addOption("High Cone", "HCone");
         Mode.addOption("Med Cone", "MCone");
@@ -215,9 +231,20 @@ public void setZero(){
 
         SmartDashboard.putData("Lift Mode", Mode);
         SmartDashboard.putNumber("Elevator Encoder 1", first.getSelectedSensorPosition());
-    
-        
-    }
+
+        // SmartDashboard.putBoolean("Bottom Limit Switch 1", bottomlimitSwitch1.get());
+        // SmartDashboard.putBoolean("Bottom Limit Switch 2", bottomlimitSwitch2.get());
+
+        // SmartDashboard.putBoolean("Top Limit Switch 1", toplimitSwitch1.get());
+        // SmartDashboard.putBoolean("Top Limit Switch 2", toplimitSwitch2.get());
+
+        // SmartDashboard.putBoolean("Bottom Switches", getBottomLimitSwitches());
+        // SmartDashboard.putBoolean("Top Switches", getTopLimitSwitches());
+
+        // if( getBottomLimitSwitches() ){
+        //     first.setSelectedSensorPosition(0);
+        // }
+}
 
     public int getPosition(){
         return position;
@@ -226,7 +253,8 @@ public void setZero(){
     public void setPosition(int position){
         this.position = position; 
     }
-    public double getENcoder(){
+
+    public double getEncoder(){
         return first.getSelectedSensorPosition(); 
     }
 }
