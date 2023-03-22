@@ -18,10 +18,14 @@ public class TeleopSwerve extends CommandBase {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private DoubleSupplier speedMult;
-    private SlewRateLimiter ramp; 
+    private SlewRateLimiter rampx; 
+    private SlewRateLimiter rampy;
+    private SlewRateLimiter rampz;
 
-    public TeleopSwerve(double smooth ,Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, DoubleSupplier speedMult) {
-        this.ramp = new SlewRateLimiter(smooth);
+    public TeleopSwerve(double smoothx, double smoothy, double smoothz ,Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, DoubleSupplier speedMult) {
+        this.rampx = new SlewRateLimiter(smoothx);
+        this.rampy = new SlewRateLimiter(smoothy);
+        this.rampz = new SlewRateLimiter(smoothz);
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
         this.speedMult= speedMult;
@@ -43,8 +47,8 @@ public class TeleopSwerve extends CommandBase {
 
         /* Drive */
         s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-            rotationVal * Constants.Swerve.maxAngularVelocity, 
+            new Translation2d(rampy.calculate(translationVal), rampx.calculate(strafeVal)).times(Constants.Swerve.maxSpeed), 
+            rampz.calculate(rotationVal) * Constants.Swerve.maxAngularVelocity, 
             true,//robotCentricSup.getAsBoolean(), 
             true
         );

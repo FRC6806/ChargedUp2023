@@ -64,7 +64,7 @@ public boolean isFinished(){
             true,//robotCentricSup.getAsBoolean(), 
             true
         );  
-        currentstate = (s_Swerve.mSwerveMods[0].getPosition().distanceMeters );//+ s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0;          
+        currentstate = Math.abs((s_Swerve.mSwerveMods[0].getPosition().distanceMeters ));//+ s_Swerve.mSwerveMods[1].getPosition().distanceMeters + s_Swerve.mSwerveMods[2].getPosition().distanceMeters + s_Swerve.mSwerveMods[3].getPosition().distanceMeters)/4.0;          
         SmartDashboard.putNumber("inital state", initalstate);
         SmartDashboard.putNumber("current state", currentstate);
         SmartDashboard.putNumber("desiredState", desiredState);
