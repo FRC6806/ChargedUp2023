@@ -14,19 +14,20 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 import frc.robot.commands.BalanceOnBeamCommand;
+import frc.robot.commands.BalanceOnBeamCommand2;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.DriveTilt;
 import frc.robot.autos.AutoHighCube;
 
 
-public class AutoHighCubeBalance extends SequentialCommandGroup {    
+public class AutoHighCubeCenter extends SequentialCommandGroup {    
 
     private Arm s_arm;   
     private Intake s_Intake;
     private Elevator s_Elevator;
     private Swerve s_swerve;
 
-    public AutoHighCubeBalance(Swerve s_swerve,Arm s_arm, Intake s_Intake, Elevator s_Elevator, double speed, int position) {
+    public AutoHighCubeCenter(Swerve s_swerve,Arm s_arm, Intake s_Intake, Elevator s_Elevator, double speed, int position) {
         
         this.s_swerve = s_swerve;
         this.s_Intake = s_Intake;
@@ -40,9 +41,7 @@ public class AutoHighCubeBalance extends SequentialCommandGroup {
 
         addCommands(
             new AutoHighCube(s_swerve, s_arm, s_Intake, s_Elevator, speed, position),
-            new WaitCommand(0.001),
             new DriveTilt(s_swerve),
-            new WaitCommand(0.001),
             new BalanceOnBeamCommand(s_swerve)
            // new InstantCommand(() -> new DriveDistance(-16, s_swerve, .2))
         );

@@ -60,13 +60,15 @@ public class RobotContainer {
 
     // Autos
 
-    private final Command m_midAuto = new AutoMidCube(s_Swerve, s_Arm, s_Intake, s_Elevator, .5,  25000); 
-    private final Command m_highAuto = new AutoHighCube(s_Swerve, s_Arm, s_Intake, s_Elevator, .5,  41000); 
+    private final Command m_HighCube = new AutoHighCube(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
+    private final Command m_CenterCube = new AutoHighCubeCenter(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
+    private final Command m_RightCube = new AutoHighCubeDriveRight(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
+    private final Command m_LeftCube = new AutoHighCubeDriveLeft(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
     // private final Command m_driveDistance = new DriveDistance(5, s_Swerve, .1);
     SendableChooser<Command> m_Chooser = new SendableChooser<>(); 
 
     
-    
+;    
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         
@@ -95,8 +97,10 @@ public class RobotContainer {
 
         s_Elevator.stop();
 
-        m_Chooser.setDefaultOption("Mid Cube Auto", m_midAuto);
-        m_Chooser.addOption("High Cube Auto", m_highAuto);
+        m_Chooser.setDefaultOption("DEFAULT: High Cube Auto", m_HighCube);
+        m_Chooser.addOption("SHORT: High Cube Auto", m_LeftCube);
+        m_Chooser.addOption("CENTER: High Cube + Balance Auto", m_CenterCube);
+        m_Chooser.addOption("LONG: High Cube Auto", m_RightCube);
         SmartDashboard.putData(m_Chooser);
 
     }
@@ -120,7 +124,7 @@ public class RobotContainer {
         JoystickButton driverButton2 = new JoystickButton(driverJoystick, 2);
         JoystickButton driverButton3 = new JoystickButton(driverJoystick, 3);
         JoystickButton driverButton4 = new JoystickButton(driverJoystick, 4);
-       // JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
+        // JoystickButton driverButton5 = new JoystickButton(driverJoystick, 5);
         JoystickButton driverButton6 = new JoystickButton(driverJoystick, 6);
         JoystickButton driverButton7 = new JoystickButton(driverJoystick, 7);
         JoystickButton driverButton8 = new JoystickButton(driverJoystick, 8);
@@ -143,28 +147,13 @@ public class RobotContainer {
         POVButton operatorDpadRight = new POVButton(operatorController, 90);
         
         /* Button Bindings */       
-        driverButton2.onTrue(new BalanceOnBeamCommand(s_Swerve));
-        driverButton3.onTrue(new Hunt(s_Swerve , s_Vision));
-        driverButton4.onTrue( new BalanceOnBeamCommand(s_Swerve));
+        // driverButton2.onTrue(new BalanceOnBeamCommand(s_Swerve));
+        //driverButton3.onTrue(new Hunt(s_Swerve , s_Vision));
+        //driverButton4.onTrue( new BalanceOnBeamCommand(s_Swerve));
         //driverTrigger.onTrue(new AutoScore( s_Arm, s_Intake, s_Elevator,43000)); 
         driverButton6.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
         driverTrigger.onTrue(new AutoIntake1(s_Arm, s_Intake, s_Elevator));
         driverTrigger.toggleOnFalse(new AutoIntake2(s_Arm, s_Intake, s_Elevator));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
         // driverButton8.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(45000)));
         // driverButton7.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
@@ -217,10 +206,10 @@ public class RobotContainer {
         //return new DriveTilt(s_Swerve);
         // return new AutoHighCubeBalance(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
         //return new DriveDistance(7.7, s_Swerve, -.2); 
-        return new AutoHighCubeDriveRight(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
+        //return new AutoHighCubeDriveRight(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
         //return new BalanceOnBeamCommand(s_Swerve);
         //return new DriveTilt(s_Swerve);
-        //return m_Chooser.getSelected();
+        return m_Chooser.getSelected();
     }
 
     

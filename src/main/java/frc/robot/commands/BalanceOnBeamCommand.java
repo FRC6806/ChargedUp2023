@@ -40,11 +40,8 @@ public class BalanceOnBeamCommand extends CommandBase {
     drivePower = Math.min(Math.abs( Constants.BEAM_BALANACED_DRIVE_KP * error) , 1);
     drivePower = Math.copySign(drivePower, error);
     
-    error = Math.pow(Math.abs(error), .25);
+    error = Math.pow(Math.abs(error), .166); // .25
     
-    
-
-
     //drivePower = Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
 
 
@@ -56,7 +53,7 @@ public class BalanceOnBeamCommand extends CommandBase {
 
     // Limit the max power
     if (Math.abs(drivePower) > 0.25) {
-      drivePower = Math.copySign(0.15, drivePower);
+      drivePower = Math.copySign(0.1, drivePower);
     }
 
     s_Swerve.drive(new Translation2d(drivePower, 0).times(Constants.Swerve.maxSpeed),

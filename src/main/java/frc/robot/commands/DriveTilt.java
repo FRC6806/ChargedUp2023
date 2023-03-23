@@ -35,7 +35,7 @@ public void end(boolean interupted){
 }
 
 public boolean isFinished(){
-    return Math.abs(s_Swerve.getPitch()) >=10;
+    return Math.abs(s_Swerve.getPitch()) >= 10;
     
 }
 

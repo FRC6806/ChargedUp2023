@@ -18,10 +18,6 @@ public class Intake extends SubsystemBase {
     SendableChooser<String> Mode = new SendableChooser<String>();
     private PWMTalonFX intakeMotor;
     
-    
-    
-    
-    
     private DoubleSolenoid intakeSlant;
     private PneumaticHub hub = new PneumaticHub(17);
     private double speed; 
