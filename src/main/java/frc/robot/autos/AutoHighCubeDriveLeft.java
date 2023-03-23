@@ -30,7 +30,6 @@ public class AutoHighCubeDriveLeft extends SequentialCommandGroup {
         addRequirements(s_arm);
         addRequirements(s_Intake);
         addRequirements(s_Elevator);
-    
    
         addCommands(
             new AutoHighCube(s_swerve, s_arm, s_Intake, s_Elevator, speed, position),
