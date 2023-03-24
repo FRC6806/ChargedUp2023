@@ -83,7 +83,7 @@ public class RobotContainer {
             new TeleopSwerve(
                 1, 
                 1,
-                1,
+                1.5,
                 s_Swerve, 
                 () -> driverJoystick.getRawAxis(translationAxis), 
                 () -> driverJoystick.getRawAxis(strafeAxis), 
