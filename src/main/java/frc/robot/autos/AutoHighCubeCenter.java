@@ -13,6 +13,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
+import frc.robot.commands.Balance;
 import frc.robot.commands.BalanceOnBeamCommand;
 import frc.robot.commands.BalanceOnBeamCommand2;
 import frc.robot.commands.DriveDistance;
@@ -41,8 +42,9 @@ public class AutoHighCubeCenter extends SequentialCommandGroup {
 
         addCommands(
             new AutoHighCube(s_swerve, s_arm, s_Intake, s_Elevator, speed, position),
-            new DriveTilt(s_swerve),
-            new BalanceOnBeamCommand(s_swerve)
+            new DriveDistance(8.3, s_swerve, -.2)
+            // new DriveTilt(s_swerve),
+            // new BalanceOnBeamCommand(s_swerve)
            // new InstantCommand(() -> new DriveDistance(-16, s_swerve, .2))
         );
         
