@@ -50,6 +50,7 @@ public class RobotContainer {
     //private final BalanceOnBeamCommand2 s_BalanceOnBeamCommand2 = new BalanceOnBeamCommand2(s_Swerve);
     private final AutoIntake1 s_AutoIntake1 = new AutoIntake1(s_Arm, s_Intake, s_Elevator);
     private final AutoIntake2 s_AutoIntake2 = new AutoIntake2(s_Arm, s_Intake, s_Elevator);
+    private final Hunt s_Hunt = new Hunt(s_Swerve, s_Vision);
 
 
     private double intakeSpeed = 0;
@@ -62,8 +63,9 @@ public class RobotContainer {
 
     private final Command m_HighCube = new AutoHighCube(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
     private final Command m_CenterCube = new AutoHighCubeCenter(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
-    private final Command m_RightCube = new AutoHighCubeDriveRight(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
-    private final Command m_LeftCube = new AutoHighCubeDriveLeft(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
+    private final Command m_ShortMidCube = new AutoMidCubeDriveShort(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.MID_ELEVATOR_VALUE);
+    private final Command m_LongCube = new AutoHighCubeDriveLong(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
+    private final Command m_ShortCube = new AutoHighCubeDriveShort(s_Swerve, s_Arm, s_Intake, s_Elevator, Constants.CUBE_SPEED, Constants.HIGH_ELEVATOR_VALUE);
     // private final Command m_driveDistance = new DriveDistance(5, s_Swerve, .1);
     SendableChooser<Command> m_Chooser = new SendableChooser<>(); 
 
@@ -98,9 +100,10 @@ public class RobotContainer {
         s_Elevator.stop();
 
         m_Chooser.setDefaultOption("DEFAULT: High Cube Auto", m_HighCube);
-        m_Chooser.addOption("SHORT: High Cube Auto", m_LeftCube);
+        m_Chooser.addOption("SHORT: High Cube Auto", m_ShortCube);
+        m_Chooser.addOption("SHORT: Mid Cube Auto", m_ShortMidCube);
         m_Chooser.addOption("CENTER: High Cube + Balance Auto", m_CenterCube);
-        m_Chooser.addOption("LONG: High Cube Auto", m_RightCube);
+        m_Chooser.addOption("LONG: High Cube Auto", m_LongCube);
         SmartDashboard.putData(m_Chooser);
 
     }
@@ -154,10 +157,16 @@ public class RobotContainer {
         driverButton6.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
         driverTrigger.onTrue(new AutoIntake1(s_Arm, s_Intake, s_Elevator));
         driverTrigger.toggleOnFalse(new AutoIntake2(s_Arm, s_Intake, s_Elevator));
+        driverButton4.onTrue((new DriveDistance(2, s_Swerve, -.3)));
         
         // driverButton8.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(45000)));
         // driverButton7.onTrue(new InstantCommand(() -> s_Elevator.moveToPosition(0)));
-        driverButton9.onTrue(new DriveDistance(-4, s_Swerve, 0.2));
+        // driverButton9.onTrue(new DriveDistance(-4, s_Swerve, 0.2));
+        driverButton9.whileTrue(new HuntOffset(s_Swerve, s_Vision));
+        driverButton8.whileTrue(new DriveDistanceLR(1, s_Swerve, -.1));
+        // driverButton9.toggleOnFalse(new InstantCommand(() -> ));
+        //driverButton9.onTrue(new InstantCommand(() -> s_Swerve.drive(s_Vision.get3D(), 0, true, true)));
+        //driverButton9.onTrue(new DriveDistance(15, s_Swerve, -0.1));
 
         operatorControllerX.onTrue(new InstantCommand(() -> s_Intake.spin((.5))));
         operatorControllerX.onFalse(new InstantCommand(() -> s_Intake.stop()));

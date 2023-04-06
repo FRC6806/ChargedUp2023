@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -131,13 +132,17 @@ public class Swerve extends SubsystemBase {
     public Rotation2d getYaw() {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
-
+   
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
         }
     }
     
+public double getRotation(){
+    return (gyro.getYaw()+36000) % 360;
+}
+
 
     @Override
     public void periodic(){
@@ -150,6 +155,7 @@ public class Swerve extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Angle", Math.abs(getPitch()));
+        SmartDashboard.putNumber("Yaw", getRotation());
     }
 
 

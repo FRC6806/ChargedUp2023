@@ -14,13 +14,13 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 import frc.robot.commands.DriveDistance;
 
-public class AutoHighCubeDriveLeft extends SequentialCommandGroup {    
+public class AutoHighCubeDriveShort extends SequentialCommandGroup {    
 
     private Arm s_arm;   
     private Intake s_Intake;
     private Elevator s_Elevator;
     private Swerve s_swerve;
-    public AutoHighCubeDriveLeft(Swerve s_swerve,Arm s_arm, Intake s_Intake, Elevator s_Elevator, double speed, int position) {
+    public AutoHighCubeDriveShort(Swerve s_swerve,Arm s_arm, Intake s_Intake, Elevator s_Elevator, double speed, int position) {
         
         this.s_swerve = s_swerve;
         this.s_Intake = s_Intake;
@@ -33,7 +33,7 @@ public class AutoHighCubeDriveLeft extends SequentialCommandGroup {
    
         addCommands(
             new AutoHighCube(s_swerve, s_arm, s_Intake, s_Elevator, speed, position),
-            new DriveDistance(7.7, s_swerve, -.2)
+            new DriveDistance(2.2, s_swerve, -.2)
         );
     }
 

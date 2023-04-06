@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DriveDistance extends CommandBase {    
+public class DriveDistanceLR extends CommandBase {    
     private Swerve  s_Swerve; 
     
     private double currentstate;
@@ -15,7 +15,7 @@ public class DriveDistance extends CommandBase {
     private double speed;
     private boolean didThing = false;
     
-    public DriveDistance(double desiredstateFeet, Swerve s_Swerve, double speed) {
+    public DriveDistanceLR(double desiredstateFeet, Swerve s_Swerve, double speed) {
         
         this.s_Swerve = s_Swerve;
         this.desiredState = desiredstateFeet;//*14.7;//15.4839;
@@ -80,7 +80,7 @@ public boolean isFinished(){
  
 
         s_Swerve.drive(
-            new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed), 
+            new Translation2d(0, speed).times(Constants.Swerve.maxSpeed), 
             0 * Constants.Swerve.maxAngularVelocity, 
             true,//robotCentricSup.getAsBoolean(), 
             true
@@ -106,6 +106,8 @@ public boolean isFinished(){
     }
 }
  
+
+
 
 
 

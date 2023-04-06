@@ -3,11 +3,14 @@ import org.photonvision.PhotonCamera;
 
 import org.photonvision.targeting.*;
 import org.photonvision.*;
-//import org.photonvision.common.dataflow.*;
+import org.photonvision.common.dataflow.*;
 import org.photonvision.common.dataflow.structures.*;
 import org.photonvision.common.networktables.*;
 import org.photonvision.targeting.*;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase{
     PhotonCamera camera;
+    // AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(AprilTagFields.k2023ChargedUp.m_resourceFile);
 
     public Vision(String cameraName){
       camera = new PhotonCamera(cameraName);
@@ -24,7 +28,8 @@ public class Vision extends SubsystemBase{
     public void start(){
       var result = camera.getLatestResult();
         PhotonTrackedTarget target = result.getBestTarget();
-      if(result.hasTargets() == true){
+      if(result.hasTargets()){
+    
         double yaw = target.getYaw();
         SmartDashboard.putNumber("Yaw", yaw);
         double pitch = target.getPitch();
@@ -35,10 +40,16 @@ public class Vision extends SubsystemBase{
         SmartDashboard.putNumber("Skew", skew);
     }
   }
-   public double gettilt(){
+  public boolean HasTarget(){
+    var result = camera.getLatestResult();
+    return result.hasTargets(); 
+  }
+   public double getPitch(){
     var result = camera.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
-    if(result.hasTargets() == true){
+    if(result.hasTargets()){
+      SmartDashboard.putNumber("Pitch",target.getPitch());
+      // System.out.println(target.getPitch());
       return target.getPitch();
     }
     else{
@@ -54,26 +65,40 @@ public class Vision extends SubsystemBase{
         return 0;}
       }
 
-    public double getpos(){
+    public double getYaw(){
       var result = camera.getLatestResult();
       PhotonTrackedTarget target = result.getBestTarget();
       if(result.hasTargets() == true){
         return target.getYaw();
       }
-      else{
+      else {
         return 0;
       }
       
     } 
-    
 
-    
-    
+    public PhotonPipelineResult getResult(){
+      return camera.getLatestResult();
+    }
+
+    // public Transform3d get3D(){
+    // var result = camera.get();
+    //   try {
+    //     PhotonTrackedTarget target = result.getBestTarget();
+    //     return target.getBestCameraToTarget();
+    //   } catch(NullPointerException e){
+    //     System.out.println("Bruh");
+    //   }
+    // }
+
     //Transform2d pose = target.getCameraToTarget();
     //List<TargetCorner> corners = target.getCorners();
 
     @Override
     public void periodic(){
-        
+        // SmartDashboard.putNumber("X3D", get3D().getX());
+        // SmartDashboard.putNumber("Y3D", get3D().getY());
+        // SmartDashboard.putNumber("Z3D", get3D().getZ());
+
     }
 }

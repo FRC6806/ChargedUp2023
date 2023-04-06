@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 
-public class Hunt extends CommandBase {    
+public class HuntOffset extends CommandBase {    
     private Swerve s_Swerve;    
     private Vision s_Vision;
     private boolean run;
@@ -20,7 +20,7 @@ public class Hunt extends CommandBase {
     private double rotChange;
     // private boolean end;
 
-    public Hunt(Swerve s_Swerve,Vision s_Vision) {
+    public HuntOffset(Swerve s_Swerve,Vision s_Vision) {
         this.s_Vision = s_Vision;
         this.s_Swerve = s_Swerve;
         addRequirements(s_Vision);
@@ -73,20 +73,20 @@ public void setEnd(){
 
         //System.out.println("test");
         //end = false;
-        if( Math.abs(s_Swerve.getRotation()) < 5 ||s_Swerve.getRotation() > 355){
-            rotChange = 0; 
-        }else if(  s_Swerve.getRotation() > 180 ){
-            rotChange = -.4;
-        }else{
-            rotChange = .4;
+        // if( Math.abs(s_Swerve.getRotation()) < 5 ||s_Swerve.getRotation() > 355){
+        //     rotChange = 0; 
+        // }else if(  s_Swerve.getRotation() > 180 ){
+        //     rotChange = -.4;
+        // }else{
+        //     rotChange = .4;
 
-        System.out.println("rotChange" + rotChange);
-        }
+        // System.out.println("rotChange" + rotChange);
+        // }
         
 
         if( Math.abs(s_Vision.getYaw()) > 2){
             yawChange = s_Vision.getYaw()*-.02;
-            yawChange = MathUtil.clamp(yawChange, 0, 0.2);
+            yawChange = -1*(MathUtil.clamp(yawChange, 0, 0.2));
             SmartDashboard.putNumber("pitchChange", yawChange);
             System.out.println("yawChange" + yawChange);
         }else{
@@ -97,7 +97,7 @@ public void setEnd(){
 
         if(Math.abs(s_Vision.getPitch()) < Constants.CubeTagpitch ){ // Maybe could be 14
             pitchChange = 1/Math.abs(s_Vision.getPitch());
-            pitchChange = MathUtil.clamp(pitchChange, 0, 0.2);
+            pitchChange = -1*(MathUtil.clamp(pitchChange, 0, 0.2));
             System.out.println("pitchChange" + pitchChange);
 
             
@@ -109,7 +109,7 @@ public void setEnd(){
 
             s_Swerve.drive(
                 new Translation2d(pitchChange, yawChange).times(Constants.Swerve.maxSpeed), 
-                rotChange * Constants.Swerve.maxAngularVelocity, 
+                0 * Constants.Swerve.maxAngularVelocity, 
                 true,//robotCentricSup.getAsBoolean(), 
                 true
             );
@@ -123,8 +123,3 @@ public void setEnd(){
         }
         
         }
-
-
-
-
-

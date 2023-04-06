@@ -4,9 +4,19 @@ import javax.swing.plaf.basic.BasicComboBoxUI.FocusHandler;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import static edu.wpi.first.math.util.Units.degreesToRadians;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.SwerveModuleConstants;
@@ -40,7 +50,7 @@ public final class Constants {
 
 
 
-
+        
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(13.375); //TODO: This must be tuned to specific robot
         public static final double wheelBase = Units.inchesToMeters(25.5); //TODO: This must be tuned to specific robot
@@ -56,7 +66,7 @@ public final class Constants {
             new Translation2d(wheelBase / 2.0, -trackWidth / 2.0));
 
         /* Module Gear Ratios */
-        public static final double driveGearRatio = 1/7.8; // we changed this because nick is impatient
+        public static final double driveGearRatio = 7.8/1;//1/7.8; // we changed this because nick is impatient
         public static final double angleGearRatio = 10.29; // and this
 
         /* Motor Inverts */
@@ -200,6 +210,46 @@ public final class Constants {
     public static final int MID_ELEVATOR_VALUE = 25000; 
     public static final int LOW_ELEVATOR_VALUE = 0; 
     public static final double CONE_SPEED = -0.4; 
-    public static final double CUBE_SPEED = 0.4; 
+    public static final double CUBE_SPEED = 0.4;
+    /*Hunt Constants */
+    public static final double CubeTagpitch = 13.5;
+    public static final double CubeTagYaw = 3;
+    public static final double intakeTagpitch = 0;
+    public static final double intakeTagYaw = 0;
+
+    public static class VisionConstants {
+
+        /** Physical location of the apriltag camera on the robot, relative to the center of the robot. */
+        public static final Transform3d APRILTAG_CAMERA_TO_ROBOT =
+            new Transform3d(new Translation3d(-0.06, 0.250, -0.2127), new Rotation3d(0.0, degreesToRadians(15.0), 0.0));
+    
+        /** Physical location of the shooter camera on the robot, relative to the center of the robot. */
+        public static final Transform3d LOW_LIMELIGHT_TO_ROBOT = new Transform3d(
+            new Translation3d(-0.083, 0.254, -0.537),
+            new Rotation3d(0.0, degreesToRadians(-9.8), degreesToRadians(-1.0)));
+    
+        public static final String LOW_LIMELIGHT_NAME = "limelight";
+        
+        /** Physical location of the high camera on the robot, relative to the center of the robot. */
+        public static final Transform3d HIGH_LIMELIGHT_TO_ROBOT = new Transform3d(
+            new Translation3d(-0.11, -0.015, -0.895),
+            new Rotation3d(degreesToRadians(-90.0), degreesToRadians(34.6), 0.0));
+    
+        public static final String HIGH_LIMELIGHT_NAME = "limelight-high";
+        
+        public static final double FIELD_LENGTH_METERS = 16.54175;
+        public static final double FIELD_WIDTH_METERS = 8.0137;
+    
+        // Pose on the opposite side of the field. Use with `relativeTo` to flip a pose to the opposite alliance
+        public static final Pose2d FLIPPING_POSE = new Pose2d(
+            new Translation2d(FIELD_LENGTH_METERS, FIELD_WIDTH_METERS),
+            new Rotation2d(Math.PI));
+    
+        /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
+        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+
+
+      }
+    
 
 }
